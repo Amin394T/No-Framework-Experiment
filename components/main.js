@@ -1,27 +1,32 @@
-let counter = {
-  value: 0,
-  updater: function (count) {
+class Counter {
+  constructor() {
+    this.value = 0;
+    this.render();
+  }
+
+  updater(count) {
     this.value = count;
-    render();
-  },
-};
+    this.render();
+  }
 
-function render() {
-  const node = document.querySelector("#root");
-  node.innerHTML = "";
-  node.innerHTML = `
-    <div>
-      <h1>Hello, World!</h1>
-      <button class="counter" type="button">${counter.value}</button>
-      <button class="counter" type="button">${counter.value * 2}</button>
-    </div>
-  `;
+  render() {
+    const node = document.querySelector("#root");
+    node.innerHTML = `
+      <div>
+        <h1>Hello, World!</h1>
+        <button class="counter" type="button">${this.value}</button>
+        <button class="counter" type="button">${this.value * 2}</button>
+      </div>
+    `;
 
-  document.querySelectorAll(".counter").forEach((button) => {
-    button.onclick = () => counter.updater(counter.value + 1);
-  });
+    document.querySelectorAll(".counter").forEach((button) => {
+      button.onclick = () => this.updater(this.value + 1);
+    });
+  }
 }
-render();
+
+new Counter();
+
 
 /*
 import "../styles/App.css";
