@@ -1,31 +1,54 @@
 import "../styles/main.css";
-import navigation, { searchWord } from "./navigation.js";
-// import Content from "./content";
-// import Feed from "./feed";
+import navigation from "./navigation.js";
+import content from "./content";
+import feed from "./feed";
 
-// let currentBlog = {
-//   value: new URLSearchParams(window.location.search).get("blog"),
-//   updater: function (blogID) {
-//     this.value = blogID;
-//     render();
-//   },
-// };
+let currentBlog = {
+  value: new URLSearchParams(window.location.search).get("blog"),
+  update: (blogID) => {
+    currentBlog.value = blogID;
+    document.querySelectorAll(".blogConsumer").forEach((element) => {
+      element.innerHTML = currentBlog.value;
+    });
+  },
+};
+
+let searchWord = {
+  value: "",
+  update: (query) => {
+    searchWord.value = query.toLowerCase();
+    document.querySelectorAll(".searchConsumer").forEach((element) => {
+      element.tagName == "INPUT"
+        ? (element.value = searchWord.value)
+        : (element.innerHTML = searchWord.value);
+    });
+  },
+};
+
+// -------------------- //
+
+const response = await fetch("./markdown/_files_list.json");
+const data = await response.text();
+
+const blogsList = JSON.parse(data);
+const blogData = blogsList.find((blog) => blog.path == currentBlog.value);
+
+// -------------------- //
 
 document.querySelector("#root").innerHTML = `
-  ${navigation()}
+  ${navigation(searchWord)}
+  ${await content(blogData)}
 `;
 
-document.querySelectorAll(".searchObserver").forEach((element) => {
-  element.oninput = (event) => searchWord.update(event.target.value);
+document.querySelectorAll(".blogProvider").forEach((element) => {
+  element.onclick = () => currentBlog.update("");
 });
 
-// document.querySelectorAll(".blogObserver").forEach((element) => {
-//   element.onclick = () => currentBlog.updater("");
-// });
-
-// function App() {
-//   const [currentBlog, setCurrentBlog] = useState(new URLSearchParams(window.location.search).get("blog"));
-//   const [searchWord, setSearchWord] = useState("");
+document.querySelectorAll(".searchProvider").forEach((element) => {
+  element.tagName == "INPUT"
+    ? (element.oninput = (event) => searchWord.update(event.target.value))
+    : (element.onclick = (event) => searchWord.update(event.target.getAttribute("data")));
+});
 
 //   const welcome = JSON.parse(useFetch("./markdown/_welcome.json").data);
 
@@ -40,11 +63,8 @@ document.querySelectorAll(".searchObserver").forEach((element) => {
 //   if (status == "error" || !data)
 //     return (<div className="error"> <div>&#x2716;</div> Oops! Something went wrong. </div>);
 
-//   const blogsList = JSON.parse(data);
-//   const blogData = blogsList.find((blog) => blog.path == currentBlog);
-
 //   let handleSearch = (query) => {
-//     startTransition(() => setSearchWord(query.toLowerCase()));
+//     startTransition(() => setSearchWord());
 //     setCurrentBlog(null);
 //     window.scrollTo(0, 0);
 //     history.pushState({}, "", window.location.pathname);
@@ -75,5 +95,3 @@ document.querySelectorAll(".searchObserver").forEach((element) => {
 //     </>
 //   );
 // }
-
-// export default App;

@@ -1,34 +1,37 @@
-import "../styles/Content.css";
-import useFetch from "../utilities/useFetch";
-import Markdown from "react-markdown";
+import "../styles/content.css";
+import { marked } from "marked";
 
-function Content({ blogData, handleSearch }) {
-
-  const { data, status } = useFetch(`./markdown/${blogData.path}.md`);
-  if (status == "loading")
-    return (<div className="spinner content"> <div></div> </div>);
-  if (status == "error" || !blogData)
-    return (<div className="error content"> <div>&#x2716;</div> Oops! Something went wrong. </div>);
+let content = async (blogData, handleSearch) => {
+  // const { data, status } = useFetch(`./markdown/${blogData.path}.md`);
+  // if (status == "loading")
+  //   return (<div class="spinner content"> <div></div> </div>);
+  // if (status == "error" || !blogData)
+  //   return (<div class="error content"> <div>&#x2716;</div> Oops! Something went wrong. </div>);
 
   document.title = blogData.title;
 
-  return (
-      <div className="content">
-        <h1>{blogData.title}</h1>
+  const response = await fetch(`./markdown/${blogData.path}.md`);
+  const data = await response.text();
 
-        <div className="content-info">  
-          <span>📘 &nbsp;{blogData.tags[0]}</span>
-          <span>🖊️ &nbsp;{blogData.author}</span>
-          <span>🕓 &nbsp;{blogData.date}</span>
-        </div>
+  console.log(blogData)
 
-        <Markdown>{data}</Markdown>
-        
-        <span className="content-tags">
-          { blogData.tags.map((tag) => <span key={tag} onClick={() => handleSearch(tag)}>&#35; {tag}</span>) }
-        </span>
+  return `
+    <div class="content">
+      <h1>${blogData.title}</h1>
+
+      <div class="content-info">  
+        <span>📘 &nbsp;${blogData.tags[0]}</span>
+        <span>🖊️ &nbsp;${blogData.author}</span>
+        <span>🕓 &nbsp;${blogData.date}</span>
       </div>
-  );
-}
 
-export default Content;
+      ${marked(data)}
+      
+      <span class="content-tags">
+        ${blogData.tags.map((tag) => `<span class="searchProvider" data="${tag}">${tag}</span>`).join("")}
+      </span>
+    </div>
+  `;
+};
+
+export default content;
