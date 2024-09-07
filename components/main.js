@@ -1,5 +1,5 @@
 import "../styles/main.css";
-// import Navigation from "./navigation";
+import navigation, { searchWord } from "./navigation.js";
 // import Content from "./content";
 // import Feed from "./feed";
 
@@ -11,28 +11,11 @@ import "../styles/main.css";
 //   },
 // };
 
-let searchWord = {
-  value: "",
-  update: (query) => {
-    searchWord.value = query;
-    document.querySelectorAll(".searchConsumer").forEach(element => {
-      element.innerHTML = element.tagName == "DIV" ? searchWord.value : null;
-      element.value = searchWord.value;
-    });
-  },
-};
-
 document.querySelector("#root").innerHTML = `
-  <div>
-    <input class="searchObserver searchConsumer" placeholder="🔍  Search ..." value="${searchWord.value}" />
-    <input class="searchObserver searchConsumer" placeholder="🔍  Search ..." value="${searchWord.value}" />
-    <div class="searchConsumer">${searchWord.value}</div>
-    <div class="searchConsumer">${searchWord.value}</div>
-  </div>
+  ${navigation()}
 `;
 
-
-document.querySelectorAll(".searchObserver").forEach(element => {
+document.querySelectorAll(".searchObserver").forEach((element) => {
   element.oninput = (event) => searchWord.update(event.target.value);
 });
 
