@@ -27,28 +27,28 @@ let searchWord = {
 
 // -------------------- //
 
-fetch("./markdown/_files_list.json")
-  .then((response) => {
-    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-    return response.json();
-  })
-  .then((data) => {
-    const blogsList = data;
-    const blogData = blogsList.find((blog) => blog.path == currentBlog.value);
+let blogsList = [];
 
-    document.querySelector("#root").innerHTML = `
-    ${navigation(searchWord)}
-    ${content(blogData)}
-  `;
-  })
-  .catch((error) => {
-    document.querySelector("#root").innerHTML = `<div class="error"> <div>&#x2716;</div> Oops! Something went wrong. </div>`;
-    console.error(error);
-  });
+try {
+  document.querySelector("#root").innerHTML = `<div class="loading"> <div></div> </div>`;
+  const response = await fetch("./markdown/_files_list.json");
+  if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+  blogsList = await response.json();
+}
+catch (error) {
+  document.querySelector("#root").innerHTML = `<div class="error"> <div>&#x2716;</div> Oops! Something went wrong. </div>`;
+  console.error(error);
+}
+
+let blogData = blogsList.find((blog) => blog.path == currentBlog.value);
+
+document.querySelector("#root").innerHTML = `
+  ${navigation(searchWord)}
+  <div class="content">${content(blogData)}</div>
+  
+`;
 
 // -------------------- //
-
-document.querySelector("#root").innerHTML = `<div class="loading"> <div></div> </div>`;
 
 document.querySelectorAll(".blogProvider").forEach((element) => {
   element.onclick = () => currentBlog.update("");
