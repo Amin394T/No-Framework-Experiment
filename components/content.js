@@ -27,7 +27,7 @@ let content = (blogData) => {
       `;
     })
     .catch((error) => {
-      document.querySelectorAll(".content").outerHTML = `<div class="error"> <div>&#x2716;</div> Oops! Something went wrong. </div>`;
+      document.querySelector(".content").outerHTML = `<div class="error"> <div>&#x2716;</div> Oops! Something went wrong. </div>`;
       console.error(error);
     });
 

@@ -27,17 +27,28 @@ let searchWord = {
 
 // -------------------- //
 
-const response = await fetch("./markdown/_files_list.json");
+fetch("./markdown/_files_list.json")
+  .then((response) => {
+    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+    return response.json();
+  })
+  .then((data) => {
+    const blogsList = data;
+    const blogData = blogsList.find((blog) => blog.path == currentBlog.value);
 
-const blogsList = await response.json();
-const blogData = blogsList.find((blog) => blog.path == currentBlog.value);
+    document.querySelector("#root").innerHTML = `
+    ${navigation(searchWord)}
+    ${content(blogData)}
+  `;
+  })
+  .catch((error) => {
+    document.querySelector("#root").innerHTML = `<div class="error"> <div>&#x2716;</div> Oops! Something went wrong. </div>`;
+    console.error(error);
+  });
 
 // -------------------- //
 
-document.querySelector("#root").innerHTML = `
-  ${navigation(searchWord)}
-  ${content(blogData)}
-`;
+document.querySelector("#root").innerHTML = `<div class="loading"> <div></div> </div>`;
 
 document.querySelectorAll(".blogProvider").forEach((element) => {
   element.onclick = () => currentBlog.update("");
@@ -55,12 +66,6 @@ document.querySelectorAll(".searchProvider").forEach((element) => {
 //     setCurrentBlog(new URLSearchParams(window.location.search).get("blog"));
 //     document.title = welcome.name;
 //   };
-
-//   const { data, status } = useFetch("./markdown/_files_list.json");
-//   if (status == "loading")
-//     return (<div className="spinner"> <div></div> </div>);
-//   if (status == "error" || !data)
-//     return (<div className="error"> <div>&#x2716;</div> Oops! Something went wrong. </div>);
 
 //   let handleSearch = (query) => {
 //     startTransition(() => setSearchWord());
