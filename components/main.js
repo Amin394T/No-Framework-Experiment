@@ -28,16 +28,15 @@ let searchWord = {
 // -------------------- //
 
 const response = await fetch("./markdown/_files_list.json");
-const data = await response.text();
 
-const blogsList = JSON.parse(data);
+const blogsList = await response.json();
 const blogData = blogsList.find((blog) => blog.path == currentBlog.value);
 
 // -------------------- //
 
 document.querySelector("#root").innerHTML = `
   ${navigation(searchWord)}
-  ${await content(blogData)}
+  ${content(blogData)}
 `;
 
 document.querySelectorAll(".blogProvider").forEach((element) => {
