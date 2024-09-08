@@ -1,15 +1,11 @@
 import "../styles/content.css";
 import { marked } from "marked";
 
-let content = async (blogData) => {
-
-  document.querySelector("#root").innerHTML += `<div class="content"></div>`;
-  
+let contentFetch = async (blogData) => {
   try {
-    document.querySelector(".content").innerHTML = `<div class="loading"> <div></div> </div>`;
+    //if (!blogData) throw new Error("No data found!");
     const response = await fetch(`./markdown/${blogData.path}.md`);
     if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-    
     document.title = blogData.title;
 
     document.querySelector(".content").innerHTML = `
@@ -22,7 +18,7 @@ let content = async (blogData) => {
       </div>
 
       ${marked(await response.text())}
-      
+
       <span class="content-tags">
         ${blogData.tags.map((tag) => `<span class="searchProvider" data="${tag}">${tag}</span>`).join("")}
       </span>
@@ -30,9 +26,13 @@ let content = async (blogData) => {
   }
   catch (error) {
     document.querySelector(".content").outerHTML = `<div class="error"> <div>&#x2716;</div> Oops! Something went wrong. </div>`;
-      console.error(error);
+    console.error(error);
   }
+};
 
+let content = (blogData) => {
+  contentFetch(blogData);
+  return `<div class="content"><div class="loading"> <div></div> </div></div>`;
 };
 
 export default content;

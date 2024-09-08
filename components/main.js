@@ -44,8 +44,7 @@ let blogData = blogsList.find((blog) => blog.path == currentBlog.value);
 
 document.querySelector("#root").innerHTML = `
   ${navigation(searchWord)}
-  <div class="content">${content(blogData)}</div>
-  
+  ${content(blogData)}
 `;
 
 // -------------------- //
