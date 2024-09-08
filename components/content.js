@@ -1,15 +1,16 @@
 import "../styles/content.css";
-import fetchData from "../utilities/fetchData";
 import { marked } from "marked";
 
 let content = (blogData) => {
-  let fetchContent = async () => {
-    const data = await fetchData(`./markdown/${blogData.path}.md`);
+  fetch(`./markdown/${blogData.path}.md`)
+    .then((response) => {
+      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+      return response.text();
+    })
+    .then((data) => {
+      document.title = blogData.title;
 
-    document.title = blogData.title;
-
-    document.querySelectorAll(".content").forEach((element) => {
-      element.innerHTML = `
+      document.querySelector(".content").innerHTML = `
         <h1>${blogData.title}</h1>
 
         <div class="content-info">  
@@ -24,14 +25,15 @@ let content = (blogData) => {
           ${blogData.tags.map((tag) => `<span class="searchProvider" data="${tag}">${tag}</span>`).join("")}
         </span>
       `;
+    })
+    .catch((error) => {
+      document.querySelectorAll(".content").outerHTML = `<div class="error"> <div>&#x2716;</div> Oops! Something went wrong. </div>`;
+      console.error(error);
     });
-  };
-  fetchContent();
 
   return `
     <div class="content">
       <div class="loading"> <div></div> </div>
-      <div class="error" style="display: none"> <div>&#x2716;</div> Oops! Something went wrong. </div>
     </div>
   `;
 };
