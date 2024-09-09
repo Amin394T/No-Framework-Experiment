@@ -3,9 +3,9 @@ import { marked } from "marked";
 
 let contentFetch = async (blogData) => {
   try {
-    //if (!blogData) throw new Error("No data found!");
-    const response = await fetch(`./markdown/${blogData.path}.md`);
+    const response = await fetch(`./markdown/${blogData?.path}.md`);
     if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+    if (response.headers.get("content-type") != "text/markdown") throw new Error("File Not Found!");
     document.title = blogData.title;
 
     document.querySelector(".content").innerHTML = `
@@ -23,8 +23,7 @@ let contentFetch = async (blogData) => {
         ${blogData.tags.map((tag) => `<span class="searchProvider" data="${tag}">${tag}</span>`).join("")}
       </span>
     `;
-  }
-  catch (error) {
+  } catch (error) {
     document.querySelector(".content").outerHTML = `<div class="error"> <div>&#x2716;</div> Oops! Something went wrong. </div>`;
     console.error(error);
   }
