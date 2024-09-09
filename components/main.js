@@ -3,24 +3,24 @@ import navigation from "./navigation.js";
 import content from "./content";
 import feed from "./feed";
 
-let currentBlog = {
-  value: new URLSearchParams(window.location.search).get("blog"),
-  update: (blogID) => {
-    currentBlog.value = blogID;
-    document.querySelectorAll(".blogConsumer").forEach((element) => {
-      element.innerHTML = currentBlog.value;
+let searchQuery = {
+  value: "",
+  update: (query) => {
+    searchQuery.value = query.toLowerCase();
+    document.querySelectorAll(".searchConsumer").forEach((element) => {
+      element.tagName == "INPUT"
+        ? (element.value = searchQuery.value)
+        : (element.innerHTML = searchQuery.value);
     });
   },
 };
 
-let searchWord = {
-  value: "",
-  update: (query) => {
-    searchWord.value = query.toLowerCase();
-    document.querySelectorAll(".searchConsumer").forEach((element) => {
-      element.tagName == "INPUT"
-        ? (element.value = searchWord.value)
-        : (element.innerHTML = searchWord.value);
+let currentBlog = {
+  value: new URLSearchParams(window.location.search).get("blog"),
+  update: (blog) => {
+    currentBlog.value = blog;
+    document.querySelectorAll(".blogConsumer").forEach((element) => {
+      element.innerHTML = currentBlog.value;
     });
   },
 };
@@ -43,21 +43,23 @@ catch (error) {
 let blogData = blogsList.find((blog) => blog.path == currentBlog.value);
 
 document.querySelector("#root").innerHTML = `
-  ${navigation(searchWord)}
-  ${content(blogData)}
+  ${navigation(searchQuery)}
+  ${!currentBlog.value ? feed(blogsList, searchQuery) : content(blogData)}
 `;
 
 // -------------------- //
 
-document.querySelectorAll(".blogProvider").forEach((element) => {
-  element.onclick = () => currentBlog.update("");
-});
+setTimeout(() => {
+  document.querySelectorAll(".blogProvider").forEach((element) => {
+    element.onclick = () => currentBlog.update(element.dataset.blog);
+  });
 
-document.querySelectorAll(".searchProvider").forEach((element) => {
-  element.tagName == "INPUT"
-    ? (element.oninput = (event) => searchWord.update(event.target.value))
-    : (element.onclick = (event) => searchWord.update(event.target.getAttribute("data")));
-});
+  document.querySelectorAll(".searchProvider").forEach((element) => {
+    element.tagName == "INPUT"
+      ? (element.oninput = () => searchQuery.update(element.value))
+      : (element.onclick = () => searchQuery.update(element.dataset.query));
+  });
+}, 500);
 
 //   const welcome = JSON.parse(useFetch("./markdown/_welcome.json").data);
 

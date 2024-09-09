@@ -20,7 +20,7 @@ let contentFetch = async (blogData) => {
       ${marked(await response.text())}
 
       <span class="content-tags">
-        ${blogData.tags.map((tag) => `<span class="searchProvider" data="${tag}">${tag}</span>`).join("")}
+        ${blogData.tags.map((tag) => `<span class="searchProvider" data-query="${tag}">${tag}</span>`).join("")}
       </span>
     `;
   } catch (error) {
