@@ -1,12 +1,12 @@
 import "../styles/feed.css";
 
-let feed = (blogsList, searchQuery) => {
-  const filteredBlogs = blogsList.filter((blog) =>
+const feed = (blogsList, searchQuery) => {
+  let filteredBlogs = blogsList.filter((blog) =>
       blog.tags.some((tag) => tag.toLowerCase().includes(searchQuery.value)) ||
       blog.title.toLowerCase().includes(searchQuery.value)
   );
   
-  const sortedBlogs = filteredBlogs.sort((blog1, blog2) => new Date(blog2.date) - new Date(blog1.date));
+  let sortedBlogs = filteredBlogs.sort((blog1, blog2) => new Date(blog2.date) - new Date(blog1.date));
 
   return `
     <div class="feed">

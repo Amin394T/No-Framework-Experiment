@@ -1,7 +1,7 @@
 import "../styles/content.css";
 import { marked } from "marked";
 
-let contentFetch = async (blogData) => {
+const contentFetch = async (blogData) => {
   try {
     const response = await fetch(`./markdown/${blogData?.path}.md`);
     if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
@@ -29,7 +29,7 @@ let contentFetch = async (blogData) => {
   }
 };
 
-let content = (blogData) => {
+const content = (blogData) => {
   contentFetch(blogData);
   return `<div class="content"><div class="loading"> <div></div> </div></div>`;
 };
