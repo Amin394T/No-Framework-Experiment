@@ -4,8 +4,11 @@ import { marked } from "marked";
 const contentFetch = async (blogData) => {
   try {
     const response = await fetch(`./markdown/${blogData?.path}.md`);
-    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-    if (response.headers.get("content-type") != "text/markdown") throw new Error("File Not Found!");
+    if (!response.ok)
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    if (response.headers.get("content-type") != "text/markdown")
+      throw new Error("File Not Found!");
+    
     document.title = blogData.title;
 
     document.querySelector(".content").innerHTML = `
@@ -20,11 +23,13 @@ const contentFetch = async (blogData) => {
       ${marked(await response.text())}
 
       <span class="content-tags">
-        ${blogData.tags.map((tag) => `<span class="searchProvider" data-query="${tag}">${tag}</span>`).join("")}
+        ${blogData.tags.map((tag) =>
+          `<span class="searchProvider" data-query="${tag}">${tag}</span>`).join("")}
       </span>
     `;
   } catch (error) {
-    document.querySelector(".content").outerHTML = `<div class="error"> <div>&#x2716;</div> Oops! Something went wrong. </div>`;
+    document.querySelector(".content").outerHTML =
+      `<div class="error"> <div>&#x2716;</div> Oops! Something went wrong. </div>`;
     console.error(error);
   }
 };

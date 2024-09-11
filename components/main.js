@@ -6,11 +6,10 @@ import feed from "./feed";
 let currentBlog = {
   value: new URLSearchParams(window.location.search).get("blog"),
   update: (blog) => {
+    searchQuery.value = "";
     currentBlog.value = blog;
-    searchQuery.update("");
-    window.scrollTo(0, 0);
-    history.pushState({ blog }, "", `?blog=${blog}`);
-    render();
+    blog && history.pushState({ blog }, "", `?blog=${blog}`);
+    render("partial");
   },
 };
 
@@ -18,43 +17,51 @@ let searchQuery = {
   value: "",
   update: (query) => {
     searchQuery.value = query.toLowerCase();
-    //currentBlog.update(null);
-    window.scrollTo(0, 0);
+    currentBlog.value = null;
     history.pushState({}, "", window.location.pathname);
     //document.title = welcome.name;
-    render();
+    render("partial");
 
     document.querySelectorAll(".searchConsumer").forEach((element) => {
       element.tagName == "INPUT"
-        ? (element.value = searchQuery.value)
-        : (element.innerHTML = searchQuery.value);
+        ? element.value = searchQuery.value
+        : element.innerHTML = searchQuery.value;
     });
   },
 };
 
 // -------------------- //
 
-const render = async () => {
+const render = async (mode) => {
   
   let blogsList = [];
 
   try {
-    document.querySelector("#root").innerHTML = `<div class="loading"> <div></div> </div>`;
+    if (mode == "full")
+      document.querySelector("#root").innerHTML = `<div class="loading"> <div></div> </div>`;
+    
     const response = await fetch("./markdown/_files_list.json");
-    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+    if (!response.ok)
+      throw new Error(`HTTP error! Status: ${response.status}`);
     blogsList = await response.json();
   }
   catch (error) {
-    document.querySelector("#root").innerHTML = `<div class="error"> <div>&#x2716;</div> Oops! Something went wrong. </div>`;
+    document.querySelector("#root").innerHTML =
+      `<div class="error"> <div>&#x2716;</div> Oops! Something went wrong. </div>`;
     console.error(error);
   }
 
   let blogData = blogsList.find((blog) => blog.path == currentBlog.value);
 
-  document.querySelector("#root").innerHTML = `
-    ${navigation()}
-    ${!currentBlog.value ? feed(blogsList, searchQuery) : content(blogData)}
-  `;
+  mode == "partial"
+  ? document.querySelector(".navigation").nextElementSibling.outerHTML =
+      !currentBlog.value ? feed(blogsList, searchQuery) : content(blogData)
+  : document.querySelector("#root").innerHTML = `
+      ${navigation(searchQuery)}
+      ${!currentBlog.value ? feed(blogsList, searchQuery) : content(blogData)}
+    `;
+
+  window.scrollTo(0, 0);
 
   // -------------------- //
 
@@ -75,7 +82,7 @@ const render = async () => {
     });
   }, 500);
 };
-await render();
+await render("full");
 
 
 //   const welcome = JSON.parse(useFetch("./markdown/_welcome.json").data);
@@ -86,3 +93,7 @@ await render();
 //           <p> {welcome.line_2} </p>
 //           <p> {welcome.line_3} </p>
 //         </div> }
+
+// TO-DO 1: fix history navigation
+// TO-DO 2: fix search not clearing after blog selection
+// TO-DO 3: implement welcome message
