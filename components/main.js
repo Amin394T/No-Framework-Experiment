@@ -6,9 +6,9 @@ import feed from "./feed";
 let currentBlog = {
   value: new URLSearchParams(window.location.search).get("blog"),
   update: (blog) => {
+    blog != currentBlog.value && history.pushState({ blog }, "", `?blog=${blog}`);
     searchQuery.value = "";
     currentBlog.value = blog;
-    blog && history.pushState({ blog }, "", `?blog=${blog}`);
     render("partial");
   },
 };
@@ -16,12 +16,12 @@ let currentBlog = {
 let searchQuery = {
   value: "",
   update: (query) => {
+    !searchQuery.value && history.pushState({}, "", window.location.pathname);
     searchQuery.value = query.toLowerCase();
     currentBlog.value = null;
-    history.pushState({}, "", window.location.pathname);
-    //document.title = welcome.name;
     render("partial");
 
+    //document.title = welcome.name;
     document.querySelectorAll(".searchConsumer").forEach((element) => {
       element.tagName == "INPUT"
         ? element.value = searchQuery.value
@@ -57,7 +57,7 @@ const render = async (mode) => {
   ? document.querySelector(".navigation").nextElementSibling.outerHTML =
       !currentBlog.value ? feed(blogsList, searchQuery) : content(blogData)
   : document.querySelector("#root").innerHTML = `
-      ${navigation(searchQuery)}
+      ${navigation()}
       ${!currentBlog.value ? feed(blogsList, searchQuery) : content(blogData)}
     `;
 
@@ -67,7 +67,9 @@ const render = async (mode) => {
 
   setTimeout(() => {
     window.onpopstate = () => {
-      currentBlog.update("");
+      currentBlog.value = new URLSearchParams(window.location.search).get("blog");
+      render("partial");
+      
       //document.title = welcome.name;
     };
   
