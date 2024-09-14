@@ -6,7 +6,7 @@ import feed from "./feed";
 let currentBlog = {
   value: new URLSearchParams(window.location.search).get("blog"),
   update: (blog) => {
-    blog != currentBlog.value && history.pushState({ blog }, "", `?blog=${blog}`);
+    history.pushState({ blog }, "", `?blog=${blog}`);
     searchQuery.value = "";
     currentBlog.value = blog;
     render("partial");
@@ -14,19 +14,16 @@ let currentBlog = {
 };
 
 let searchQuery = {
-  value: "",
+  value: new URLSearchParams(window.location.search).get("search") ?? "",
   update: (query) => {
-    !searchQuery.value && history.pushState({}, "", window.location.pathname);
+    searchQuery.value
+      ? history.replaceState({ query }, "", `?search=${query}`)
+      : history.pushState({ query }, "", `?search=${query}`);
+    
     searchQuery.value = query.toLowerCase();
     currentBlog.value = null;
+    document.querySelector(".searchConsumer").value = searchQuery.value;
     render("partial");
-
-    //document.title = welcome.name;
-    document.querySelectorAll(".searchConsumer").forEach((element) => {
-      element.tagName == "INPUT"
-        ? element.value = searchQuery.value
-        : element.innerHTML = searchQuery.value;
-    });
   },
 };
 
@@ -53,14 +50,17 @@ const render = async (mode) => {
 
   let blogData = blogsList.find((blog) => blog.path == currentBlog.value);
 
-  mode == "partial"
-  ? document.querySelector(".navigation").nextElementSibling.outerHTML =
-      !currentBlog.value ? feed(blogsList, searchQuery) : content(blogData)
-  : document.querySelector("#root").innerHTML = `
+  if (mode == "partial") {
+    document.querySelector(".navigation").nextElementSibling.outerHTML =
+      !currentBlog.value ? feed(blogsList, searchQuery) : content(blogData);
+    document.querySelector(".navigation-search").value = searchQuery.value;
+  } else {
+    document.querySelector("#root").innerHTML = `
       ${navigation()}
-      ${!currentBlog.value ? feed(blogsList, searchQuery) : content(blogData)}
-    `;
+      ${!currentBlog.value ? feed(blogsList, searchQuery) : content(blogData)}`;
+  }
 
+  if (!searchQuery.value && !currentBlog.value) document.title = "Personal Blog" //welcome.name;
   window.scrollTo(0, 0);
 
   // -------------------- //
@@ -68,9 +68,8 @@ const render = async (mode) => {
   setTimeout(() => {
     window.onpopstate = () => {
       currentBlog.value = new URLSearchParams(window.location.search).get("blog");
+      searchQuery.value = new URLSearchParams(window.location.search).get("search") ?? "";
       render("partial");
-      
-      //document.title = welcome.name;
     };
   
     document.querySelectorAll(".blogProvider").forEach((element) => {
@@ -95,7 +94,3 @@ await render("full");
 //           <p> {welcome.line_2} </p>
 //           <p> {welcome.line_3} </p>
 //         </div> }
-
-// TO-DO 1: fix history navigation
-// TO-DO 2: fix search not clearing after blog selection
-// TO-DO 3: implement welcome message

@@ -9,7 +9,7 @@ const contentFetch = async (blogData) => {
     if (response.headers.get("content-type") != "text/markdown")
       throw new Error("File Not Found!");
     
-    document.title = blogData.title;
+    document.title = `Reading: "${blogData.title}"`;
 
     document.querySelector(".content").innerHTML = `
       <h1>${blogData.title}</h1>

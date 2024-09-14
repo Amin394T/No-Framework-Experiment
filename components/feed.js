@@ -1,6 +1,8 @@
 import "../styles/feed.css";
 
 const feed = (blogsList, searchQuery) => {
+  document.title = `Searching: "${searchQuery.value}"`;
+  
   let filteredBlogs = blogsList.filter((blog) =>
       blog.tags.some((tag) => tag.toLowerCase().includes(searchQuery.value)) ||
       blog.title.toLowerCase().includes(searchQuery.value)
