@@ -20,7 +20,7 @@ const feed = (blogsList, searchQuery) => {
           <div>${blog.title}</div>
         </div>
         
-      `).join('')}
+      `).join("")}
     </div>
   `;
 };
