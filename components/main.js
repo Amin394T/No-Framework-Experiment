@@ -1,7 +1,10 @@
 import "../styles/main.css";
-import navigation from "./navigation.js";
+import navigation from "./navigation";
 import content from "./content";
 import feed from "./feed";
+
+window.$ = (selector) => document.querySelector(selector);
+window.$$ = (selector) => document.querySelectorAll(selector);
 
 // ---------- STATE MANAGEMENT ---------- //
 
@@ -36,7 +39,7 @@ let blogsList = [];
 let welcome;
 
 try {
-  document.querySelector("#root").innerHTML = `<div class="loading"> <div></div> </div>`;
+  $("#root").innerHTML = `<div class="loading"> <div></div> </div>`;
 
   let response = await fetch("./markdown/_welcome.json");
   welcome = await response.json();
@@ -47,7 +50,7 @@ try {
   blogsList = await response.json();
 }
 catch (error) {
-  document.querySelector("#root").innerHTML =
+  $("#root").innerHTML =
     `<div class="error"> <div>&#x2716;</div> Oops! Something went wrong. </div>`;
   console.error(error);
 }
@@ -65,17 +68,17 @@ let welcomeMessage = `
 const render = async () => {
   let blogData = blogsList.find((blog) => blog.path == currentBlog.value);
 
-  if (!document.querySelector(".navigation"))
-    document.querySelector("#root").insertAdjacentHTML("beforebegin", navigation());
-  document.querySelector(".navigation-search").value = searchQuery.value;
+  if (!$(".navigation"))
+    $("#root").insertAdjacentHTML("beforebegin", navigation());
+  $(".searchConsumer").value = searchQuery.value;
 
-  document.querySelector("#root").innerHTML = !currentBlog.value
+  $("#root").innerHTML = !currentBlog.value
     ? feed(blogsList, searchQuery)
     : content(blogData);
   
   if (!searchQuery.value && !currentBlog.value) {
     document.title = welcome.name;
-    document.querySelector("#root").insertAdjacentHTML("afterbegin", welcomeMessage);
+    $("#root").insertAdjacentHTML("afterbegin", welcomeMessage);
   }
 
   window.scrollTo(0, 0);
@@ -89,11 +92,11 @@ const render = async () => {
       render();
     };
 
-    document.querySelectorAll(".blogProvider").forEach((element) => {
+    $$(".blogProvider").forEach((element) => {
       element.onclick = () => currentBlog.update(element.dataset.blog);
     });
 
-    document.querySelectorAll(".searchProvider").forEach((element) => {
+    $$(".searchProvider").forEach((element) => {
       element.tagName == "INPUT"
         ? (element.oninput = () => searchQuery.update(element.value))
         : (element.onclick = () => searchQuery.update(element.dataset.query));

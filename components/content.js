@@ -11,7 +11,7 @@ const contentFetch = async (blogData) => {
     
     document.title = `Reading: "${blogData.title}"`;
 
-    document.querySelector(".content").innerHTML = `
+    $(".content").innerHTML = `
       <h1>${blogData.title}</h1>
 
       <div class="content-info">  
@@ -28,7 +28,7 @@ const contentFetch = async (blogData) => {
       </span>
     `;
   } catch (error) {
-    document.querySelector(".content").outerHTML =
+    $(".content").outerHTML =
       `<div class="error"> <div>&#x2716;</div> Oops! Something went wrong. </div>`;
     console.error(error);
   }
