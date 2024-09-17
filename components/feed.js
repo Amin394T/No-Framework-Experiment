@@ -1,11 +1,11 @@
 import "../styles/feed.css";
 
 const feed = (blogsList, searchQuery) => {
-  document.title = `Searching: "${searchQuery.value}"`;
+  document.title = `Searching: "${searchQuery.get}"`;
   
   let filteredBlogs = blogsList.filter((blog) =>
-      blog.tags.some((tag) => tag.toLowerCase().includes(searchQuery.value)) ||
-      blog.title.toLowerCase().includes(searchQuery.value)
+      blog.tags.some((tag) => tag.toLowerCase().includes(searchQuery.get)) ||
+      blog.title.toLowerCase().includes(searchQuery.get)
   );
   
   let sortedBlogs = filteredBlogs.sort((blog1, blog2) => new Date(blog2.date) - new Date(blog1.date));
