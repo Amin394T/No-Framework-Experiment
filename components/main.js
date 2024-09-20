@@ -29,7 +29,6 @@ let searchQuery = {
 
     searchQuery.get = query;
     currentBlog.get = null;
-    $(".searchConsumer").value = searchQuery.get;
     render();
   },
 };
@@ -60,8 +59,9 @@ catch (error) {
 const render = async () => {
   let blogData = blogsList.find((blog) => blog.path == currentBlog.get);
 
-  if (!$(".navigation"))
-    $("#root").insertAdjacentHTML("beforebegin", navigation());
+  !$(".navigation")
+    ? $("#root").insertAdjacentHTML("beforebegin", navigation())
+    : $(".searchConsumer").value = searchQuery.get;
 
   $("#root").innerHTML = !currentBlog.get ? feed(blogsList, searchQuery) : content(blogData);
   
