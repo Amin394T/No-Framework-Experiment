@@ -36,13 +36,13 @@ let searchQuery = {
 // ---------- CONSTANTS PREPARATION ---------- //
 
 let blogsList = [];
-let welcome;
+let home;
 
 try {
   $("#root").innerHTML = `<div class="loading"> <div></div> </div>`;
 
-  let response = await fetch("./markdown/_welcome.json");
-  welcome = await response.json();
+  let response = await fetch("./markdown/_home.json");
+  home = await response.json();
 
   response = await fetch("./markdown/_files_list.json");
   if (!response.ok)
@@ -66,13 +66,15 @@ const render = async () => {
   $("#root").innerHTML = !currentBlog.get ? feed(blogsList, searchQuery) : content(blogData);
   
   if (!searchQuery.get && !currentBlog.get) {
-    document.title = welcome.name;
+    document.title = home.name;
     $("#root").insertAdjacentHTML("afterbegin",
       `<div class="content">
-        <h1> ${welcome.heading} </h1>
-        <p> ${welcome.line_1} </p>
-        <p> ${welcome.line_2} </p>
-        <p> ${welcome.line_3} </p>
+        <h1> ${home.heading} </h1>
+        ${ Object.keys(home)
+          .filter((key) => key.startsWith("line_"))
+          .map((key) => `<p>${home[key]}</p>`)
+          .join('')
+        }
       </div>`
     );
   }

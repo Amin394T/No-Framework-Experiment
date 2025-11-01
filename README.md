@@ -1,5 +1,5 @@
-# NO FRAMEWORK EXPERMENT
-This is a re-creation of an SPA made with React, only using vanilla JavaScript, no third party library has been used, except for "marked" which handles Markdown connversion to HTML. **This is a mere personal notes file, not a verified source of information**.
+# NO FRAMEWORK EXPERIMENT
+This is a re-creation of an SPA made with React, only using vanilla JavaScript, no third party library has been used, except for "marked" which handles Markdown connversion to HTML. **This is a mere observations report, not a verified source of information**.
 
 
 ## STATE DECLARATION
@@ -60,7 +60,7 @@ catch (error) {
 
 ## COMPONENTS RENDERING
 
-Reactive rendering is the perhaps the most tricky part to implement, as simply re-rendering everything at state change is not optimal and might result in poor performance, in our case things are simple, the page is separated into 2 main sections, the navigation bar, which doesn't need re-rendering, and the content area, which is shared by the blogs list view and blog content view, and is thus dependant on state.
+Reactive rendering is perhaps the most tricky part to implement, as simply re-rendering everything at state change is not optimal and might result in poor performance, in our case things are simple, the page is separated into 2 main sections, the navigation bar, which doesn't need re-rendering, and the content area, which is shared by the blogs list view and blog content view, and is thus dependant on state.
 
 The render function checks if the navigation bar already exists to avoid re-rendering it, then proceeds to determine which of the 2 views (blogs list or blog content) to display, with the correct properties passed to them as function arguments
 
@@ -171,7 +171,9 @@ const render = async () => {
 
 Rounting was managed using the browser history API, by reading and writing the states to the URL (the local storage could also be used). Writing is done inside the state setter, while reading is done in the listeners attachement stage.
 
-In our case, if "searchQuery" value is null, a new entry with the parametered URL is pushed to the browser history, if it's not empty, this indicated that the user typed another character, there is no need to push another entry th the history, instead the previous entry is overriden, this way clogging the history with entries for each key stroke is avoided, and thus a more logical navigation is assured.
+When the web application is first loaded, all states are initialized from the URL parameters, this allows sharing URLs of specific views, even though this is an SPA.
+
+Upon state update, if "searchQuery" value is null, a new entry with the parametered URL is pushed to the browser history, if it's not empty, this indicated that the user typed another character, there is no need to push another entry th the history, instead the previous entry is overriden, this way clogging the history with entries for each key stroke is avoided, and thus a more logical navigation is assured.
 
 ```js
 let searchQuery = {
@@ -190,7 +192,7 @@ let searchQuery = {
 };
 ```
 
-After URL request or history navigation (when previous or forward buttons are pressed), the application reads the URL parameters and sets the states accordingly, the states are updated directly, setters were not used, this is because many states might be present in the URL, each has a "render()" function in its setter, so to avoid issues they were updated using the getter and "render()" was called afterwards.
+At history navigation (when previous or forward buttons are pressed), the application reads the URL parameters and sets the states accordingly, the states are updated directly, setters were not used, this is because many states might be present in the URL, each has a "render()" function in its setter, so to avoid issues they were updated using the getter and "render()" was called afterwards.
 
 ```js
 const render = async () => {
