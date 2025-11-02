@@ -82,22 +82,31 @@ const render = async () => {
 
   // ---------- LISTENERS ATTACHEMENT ---------- //
 
-  setTimeout(() => {
-    window.onpopstate = () => {
-      currentBlog.get = new URLSearchParams(window.location.search).get("blog");
-      searchQuery.get = new URLSearchParams(window.location.search).get("search") ?? "";
-      render();
-    };
+  window.onpopstate = () => {
+    const params = new URLSearchParams(window.location.search);
+    currentBlog.get = params.get("blog");
+    searchQuery.get = params.get("search") ?? "";
+    render();
+  };
 
-    $$(".blogProvider").forEach((element) => {
-      element.onclick = () => currentBlog.set(element.dataset.blog);
-    });
+  document.addEventListener("click", (element) => {
+    const blog = element.target.closest(".blogProvider");
+    if (blog) {
+      currentBlog.set(blog.dataset.blog);
+      return;
+    }
 
-    $$(".searchProvider").forEach((element) => {
-      element.tagName == "INPUT"
-        ? (element.oninput = () => searchQuery.set(element.value))
-        : (element.onclick = () => searchQuery.set(element.dataset.query));
-    });
-  }, 1000);
+    const query = element.target.closest(".searchProvider");
+    if (query && query.tagName != "INPUT") {
+      searchQuery.set(query.dataset.query || "");
+    }
+  });
+
+  document.addEventListener("input", (element) => {
+    const input = element.target.closest(".searchProvider");
+    if (input && input.tagName == "INPUT") {
+      searchQuery.set(input.value);
+    }
+  });
 };
 render();
