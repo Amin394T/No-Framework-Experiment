@@ -16,7 +16,8 @@
   margin-top: 50px;
 }
 
-.content p {
+.content p,
+.content li {
   text-align: justify;
   font-size: 17px;
   line-height: 1.7;
@@ -36,6 +37,14 @@
   text-align: justify;
 }
 
+.content img {
+  max-width: 100%;
+  display: block;
+  margin: 30px auto;
+  border-radius: 10px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
 .content hr {
   color: #c2cbd2;
 }
@@ -47,6 +56,13 @@
 .content-info span {
   margin-right: 30px;
   font-size: 14px;
+}
+
+.content-image {
+  padding: 100px 20px 5px;
+  margin: -20px;
+  background-size: cover;
+  background-repeat: no-repeat; 
 }
 
 .content-author,
@@ -92,7 +108,8 @@
     margin-top: 35px;
   }
 
-  .content p {
+  .content p,
+  .content li {
     font-size: 15px;
   }
 
@@ -109,5 +126,10 @@
   .content-info span {
     margin-right: 15px;
     font-size: 12px;
+  }
+
+  .content-image {
+    padding: 80px 15px 5px;
+    margin: -15px;
   }
 }

@@ -12,12 +12,14 @@ const contentFetch = async (blogData) => {
     document.title = blogData.title;
 
     $(".content").innerHTML = `
-      <h1>${blogData.title}</h1>
+      <div class="content-image" style="background-image: linear-gradient(rgba(245, 239, 230, 0.2), rgba(245, 239, 230, 1)), url(./images/${blogData.image})">  
+        <h1>${blogData.title}</h1>
 
-      <div class="content-info">  
-        <span class="content-topic searchProvider" data-query="${blogData.tags[0]}">📘 &nbsp;${blogData.tags[0]}</span>
-        <span class="content-author searchProvider" data-query="${blogData.author}">🖊️ &nbsp;${blogData.author}</span>
-        <span>🕓 &nbsp;${blogData.date}</span>
+        <div class="content-info">  
+          <span class="content-topic searchProvider" data-query="${blogData.tags[0]}">📘 &nbsp;${blogData.tags[0]}</span>
+          <span class="content-author searchProvider" data-query="${blogData.author}">🖊️ &nbsp;${blogData.author}</span>
+          <span>🕓 &nbsp;${blogData.date}</span>
+        </div>
       </div>
 
       ${marked(await data.text())}
