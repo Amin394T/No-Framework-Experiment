@@ -60,7 +60,7 @@ const render = async () => {
   let blogData = blogsList.find((blog) => blog.path == currentBlog.get);
 
   !$(".navigation")
-    ? $("#root").insertAdjacentHTML("beforebegin", navigation())
+    ? $("#root").insertAdjacentHTML("beforebegin", navigation(searchQuery.get))
     : $(".searchConsumer").value = searchQuery.get;
 
   $("#root").innerHTML = !currentBlog.get ? feed(blogsList, searchQuery) : content(blogData);
@@ -89,23 +89,21 @@ const render = async () => {
     render();
   };
 
-  document.addEventListener("click", (element) => {
-    const blog = element.target.closest(".blogProvider");
-    if (blog) {
+  document.addEventListener("click", (event) => {
+    const blog = event.target.closest(".blogProvider");
+    if (blog)
       currentBlog.set(blog.dataset.blog);
-      return;
-    }
 
-    const query = element.target.closest(".searchProvider");
-    if (query && query.tagName != "INPUT") {
+    const query = event.target.closest(".searchProvider");
+    if (query && query.tagName != "INPUT")
       searchQuery.set(query.dataset.query || "");
-    }
   });
 
-  document.addEventListener("input", (element) => {
-    const input = element.target.closest(".searchProvider");
+  document.addEventListener("input", (event) => {
+    const input = event.target.closest(".searchProvider");
     if (input && input.tagName == "INPUT") {
-      searchQuery.set(input.value);
+      clearTimeout(input.searchDebounce);
+      input.searchDebounce = setTimeout(() => searchQuery.set(input.value), 300);
     }
   });
 };
