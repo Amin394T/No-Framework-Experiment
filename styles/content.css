@@ -49,6 +49,11 @@
   font-size: 14px;
 }
 
+.content-author,
+.content-topic {
+  cursor: pointer;
+}
+
 .content-tags {
   margin-top: 40px;
   display: flex;

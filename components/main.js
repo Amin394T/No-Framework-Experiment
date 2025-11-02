@@ -98,6 +98,6 @@ const render = async () => {
         ? (element.oninput = () => searchQuery.set(element.value))
         : (element.onclick = () => searchQuery.set(element.dataset.query));
     });
-  }, 250);
+  }, 1000);
 };
 render();
